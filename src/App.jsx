@@ -1,35 +1,64 @@
+// import env from '../../backend/env'
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Link,
+    useNavigate,
+    Outlet,
+} from "react-router-dom";
+import AuthPage from './auth pages/AuthPage'
+import SignUp from './auth pages/SignUp';
+import SignIn from './auth pages/SignIn';
+import LandingPage from './quiz_crud_pages/LandingPage';
+import CreateQuiz from './quiz_crud_pages/CreateQuiz';
+import JoinQuiz from './quiz_crud_pages/JoinQuiz';
+// const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+import { BACKEND_URL } from "../config";
 
+import {io} from "socket.io-client"
+import { useEffect } from 'react';
+//req  bhejo to backend for hte socket connection
+
+
+// import SignIn
 function App() {
-  const [count, setCount] = useState(0)
+  const [socket,setSocket]=useState(null);
+  const [auth_option,setAuth_option]=useState(null)
+    useEffect(()=>{
+    const s=io(BACKEND_URL);
+    setSocket(s);
+    return ()=>s.disconnect()  //cleanup function
+  },[])
 
+  useEffect(()=>{
+    if(!socket)return;
+    socket.emit('join-quiz','i wanna join the quiz');
+  },[socket])
+
+
+  function signuphandler() {
+    return <SignUp/>
+  }
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Router>
+      <Routes>
+        <Route path='/' element={<AuthPage/>}>
+          <Route path='signup' element={<SignUp/>}></Route>
+          <Route path='signin' element={<SignIn/>}></Route>
+        </Route>
+
+        <Route path='/crud' element={<LandingPage/>}>
+          <Route path='createquiz' element={<CreateQuiz/>}></Route>
+          <Route path='joinquiz' element={<JoinQuiz/>}></Route>
+        </Route>
+
+        
+      </Routes>
+       {/* <AuthPage/> */}
+    </Router>
   )
 }
-
+  
 export default App
