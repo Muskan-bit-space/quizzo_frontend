@@ -6,22 +6,22 @@ import SignIn from './SignIn'
 const AuthPage = () => {
 
   return (
-    <div>
-      AuthPage
-        <nav>
-            <pre>
-                <button>
-                    <Link to="signup">signup</Link>
-
-                </button> 
-                |   
-                <button>
-                    <Link to="signin">signin</Link>
-
-                </button>
-            </pre>
-        </nav>
+    <div className="auth-container">
+      <div className="auth-title">
+        <h1 className="glitch" data-text="QUIZZO">QUIZZO</h1>
+      </div>
+      <nav className="auth-nav">
+        <button className="auth-btn pulse">
+          <Link to="signup">SIGN UP</Link>
+        </button>
+        <span className="nav-separator">|</span>
+        <button className="auth-btn pulse">
+          <Link to="signin">SIGN IN</Link>
+        </button>
+      </nav>
+      <div className="auth-outlet">
         <Outlet/>
+      </div>
     </div>
   )
 }

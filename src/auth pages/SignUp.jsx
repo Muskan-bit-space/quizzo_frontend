@@ -8,7 +8,7 @@ const SignUp = () => {
       let d=BACKEND_URL+q;
       let ans= await fetch(d);
       const data = await ans.json();
-      console.log("ans")
+      console.log("ans",ans)
       // console.log(ans)
       return ans;
     }
@@ -38,18 +38,20 @@ const SignUp = () => {
   }
 
   return (
-    <div>
-        SIGNUP
-      <form action="#" method="get">
+    <div className="auth-form-container">
+      <h2 className="auth-form-title">SIGN UP</h2>
+      <form className="auth-form" action="#" method="get">
+        <div className="form-group">
+          <label htmlFor="new-email">Email</label>
+          <input id='new-email' type="email" ref={email_ref} placeholder="Enter your email" />
+        </div>
 
-        <label htmlFor="new-email">Email</label>
-        <input id='new-email' type="text" ref={email_ref} />
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
+          <input id='password' type="password" ref={password_ref} placeholder="Enter your password" />
+        </div>
 
-
-        <label htmlFor="password">Password</label>
-        <input id='password' type="text"  ref={password_ref}/>
-
-        <button onClick={signuphandler}>signup</button>
+        <button type="button" onClick={signuphandler} className="submit-btn">SIGN UP</button>
       </form>
     </div>
   )

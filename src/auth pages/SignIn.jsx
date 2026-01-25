@@ -1,22 +1,24 @@
 import React from 'react'
 
-const SignUp = () => {
+const SignIn = () => {
   return (
-    <div>
-      SIGNIN
-      <form action="#" method="get">
+    <div className="auth-form-container">
+      <h2 className="auth-form-title">SIGN IN</h2>
+      <form className="auth-form" action="#" method="get">
+        <div className="form-group">
+          <label htmlFor="signin-email">Email</label>
+          <input id='signin-email' type="email" placeholder="Enter your email" />
+        </div>
 
-        <label htmlFor="new-email">Email</label>
-        <input id='new-email' type="text" />
+        <div className="form-group">
+          <label htmlFor="signin-password">Password</label>
+          <input id='signin-password' type="password" placeholder="Enter your password" />
+        </div>
 
-
-        <label htmlFor="password">Password</label>
-        <input id='password' type="text" />
-
-
+        <button type="submit" className="submit-btn">SIGN IN</button>
       </form>
     </div>
   )
 }
 
-export default SignUp
+export default SignIn
