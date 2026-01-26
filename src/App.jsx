@@ -19,6 +19,7 @@ import { BACKEND_URL } from "../config";
 
 import {io} from "socket.io-client"
 import { useEffect } from 'react';
+import CursorFX from './CursorFX.jsx';
 //req  bhejo to backend for hte socket connection
 
 
@@ -43,6 +44,7 @@ function App() {
   }
   return (
     <Router>
+      <CursorFX />
       <Routes>
         <Route path='/' element={<AuthPage/>}>
           <Route path='signup' element={<SignUp/>}></Route>
