@@ -4,9 +4,14 @@ const SignUp = () => {
   
   const email_ref=useRef("");
   const password_ref=useRef("");
-    let authfunction=async(q)=>{
-      let d=BACKEND_URL+q;
-      let ans= await fetch(d);
+    let authfunction=async(email,password)=>{
+      let d=BACKEND_URL+`/signup`;
+      let ans= await fetch(d,{
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
       const data = await ans.json();
       console.log("ans",ans)
       // console.log(ans)
@@ -21,7 +26,7 @@ const SignUp = () => {
 
     //1. we have submitted the email and password 
     console.log(querystr)
-    const a=await authfunction(querystr);
+    const a=await authfunction(email_ref.current.value,password_ref.current.value);
     // fetch('http://localhost:',BACKEND_URL,querystr,{
     //   method:"POST",
     //   headers:{
