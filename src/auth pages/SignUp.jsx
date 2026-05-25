@@ -13,7 +13,7 @@ const SignUp = () => {
         body: JSON.stringify({ email, password })
       });
       const data = await ans.json();
-      console.log("ans",ans)
+      console.log("ans",data)
       // console.log(ans)
       return ans;
     }
