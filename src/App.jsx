@@ -27,7 +27,7 @@ import CursorFX from './CursorFX.jsx';
 function App() {
   const [socket,setSocket]=useState(null);
   const [auth_option,setAuth_option]=useState(null)
-    useEffect(()=>{
+  useEffect(()=>{
     const s=io(BACKEND_URL);
     setSocket(s);
     return ()=>s.disconnect()  //cleanup function
