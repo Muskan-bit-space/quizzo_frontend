@@ -1,5 +1,5 @@
 import React , {useState,useRef}from 'react'
-import Auth_Handler  from '../api/Auth_Handler';
+import Auth_Handler  from '../../api/Auth_Handler';
 const SignUp = () => {
   
   const email_ref=useRef("");

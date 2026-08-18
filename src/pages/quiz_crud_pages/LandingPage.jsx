@@ -1,6 +1,7 @@
 import React ,{useState} from 'react'
 import CreateQuiz from './CreateQuiz'
 import JoinQuiz from './JoinQuiz'
+import RouteCreateQuiz from './RouteCreateQuiz'
 const LandingPage = () => {
     const [val,setVal]=useState(0);
     function cqhandler(){
@@ -20,7 +21,7 @@ const LandingPage = () => {
             </div>
         }
         else if (val==1) {
-            return <CreateQuiz></CreateQuiz>
+            return <RouteCreateQuiz/>
         }
         else if (val==2) {
             return <JoinQuiz></JoinQuiz>
@@ -28,9 +29,20 @@ const LandingPage = () => {
         
     }
   return (
-    <>
-        <Element/>
-    </>
+    // <>
+    //     <Element/>
+    // </>
+
+    <Router>
+            <Routes>
+                {/* <Route path="/" element={<CreateQuiz/>}> */}
+                
+                    <Route path="/create-quiz" element={<RouteCreateQuiz/>}/>
+                    <Route path="/join-question" element={<JoinQuiz/>}/>
+                {/* </Route> */}
+                {/* <Route path="" element=""/> */}
+            </Routes>
+        </Router>
   )
 }
 

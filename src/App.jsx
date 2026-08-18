@@ -8,12 +8,12 @@ import {
     useNavigate,
     Outlet,
 } from "react-router-dom";
-import AuthPage from './auth pages/AuthPage'
-import SignUp from './auth pages/SignUp';
-import SignIn from './auth pages/SignIn';
-import LandingPage from './quiz_crud_pages/LandingPage';
-import CreateQuiz from './quiz_crud_pages/CreateQuiz';
-import JoinQuiz from './quiz_crud_pages/JoinQuiz';
+import AuthPage from './pages/auth pages/AuthPage.js'
+import SignUp from './pages/auth pages/SignUp.jsx';
+import SignIn from './pages/auth pages/SignIn.js';
+import LandingPage from './pages/quiz_crud_pages/LandingPage.jsx';
+import CreateQuiz from './pages/quiz_crud_pages/CreateQuiz.jsx';
+import JoinQuiz from './pages/quiz_crud_pages/JoinQuiz.jsx';
 // const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 import { BACKEND_URL } from "../config";
 
@@ -52,8 +52,8 @@ function App() {
         </Route>
 
         <Route path='/crud' element={<LandingPage/>}>
-          <Route path='createquiz' element={<CreateQuiz/>}></Route>
-          <Route path='joinquiz' element={<JoinQuiz/>}></Route>
+          {/* <Route path='createquiz' element={<CreateQuiz/>}></Route>
+          <Route path='joinquiz' element={<JoinQuiz/>}></Route> */}
         </Route>
 
         
