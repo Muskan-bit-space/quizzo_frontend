@@ -1,9 +1,15 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const CreateQ = () => {
+    const navigate=useNavigate();
     return (
         <div>
-            question page
+            <h1>
+                question page
+
+            </h1>
+            <br />
             <label htmlFor="question">type your q</label>
             <br />
 
@@ -18,7 +24,7 @@ const CreateQ = () => {
 
             <br />
 
-
+            <button onClick={()=>navigate('/crud/createquiz')}>Done</button>
         </div>
     )
 }

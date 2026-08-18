@@ -1,6 +1,5 @@
-import React ,{useState, useNavigate} from 'react'
-import CreateQuiz from './CreateQuiz'
-import JoinQuiz from './JoinQuiz'
+import React, {useState} from "react";
+import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 // import RouteCreateQuiz from './RouteCreateQuiz'
 const LandingPage = () => {
     const [val,setVal]=useState(0);
@@ -33,9 +32,9 @@ const LandingPage = () => {
     // <>
 
         <>
-            <button onClick={() => navigate('/createquiz')}>create</button>
+            <button onClick={() => navigate('createquiz')}>create</button>
             <br />
-            <button onClick={() => navigate('/joinquiz')}>join</button>
+            <button onClick={() => navigate('joinquiz')}>join</button>
         </>
   )
 }

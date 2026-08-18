@@ -1,4 +1,5 @@
-import React , { Router, Routes, Route, useNavigate} from 'react'
+import React  from 'react'
+import { Router, Routes, Route, useNavigate} from 'react-router-dom'
 
 const CreateQuiz = () => {
 
@@ -27,7 +28,7 @@ const CreateQuiz = () => {
     <div>
       create quiz page
       <br />
-      <button onClick={navigate("/create-question")}>
+      <button onClick={() => navigate("create-question")}>
         add a question
 
       </button>
