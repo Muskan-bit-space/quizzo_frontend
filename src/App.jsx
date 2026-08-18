@@ -8,9 +8,9 @@ import {
     useNavigate,
     Outlet,
 } from "react-router-dom";
-import AuthPage from './pages/auth pages/AuthPage.js'
+import AuthPage from './pages/auth pages/AuthPage'
 import SignUp from './pages/auth pages/SignUp.jsx';
-import SignIn from './pages/auth pages/SignIn.js';
+import SignIn from './pages/auth pages/SignIn';
 import LandingPage from './pages/quiz_crud_pages/LandingPage.jsx';
 import CreateQuiz from './pages/quiz_crud_pages/CreateQuiz.jsx';
 import JoinQuiz from './pages/quiz_crud_pages/JoinQuiz.jsx';
@@ -22,6 +22,7 @@ import { useEffect } from 'react';
 import CursorFX from './CursorFX.jsx';
 //req  bhejo to backend for hte socket connection
 
+import All_routes from './logic/All_routes.jsx';
 
 // import SignIn
 function App() {
@@ -43,23 +44,24 @@ function App() {
     return <SignUp/>
   }
   return (
-    <Router>
-      <CursorFX />
-      <Routes>
-        <Route path='/' element={<AuthPage/>}>
-          <Route path='signup' element={<SignUp/>}></Route>
-          <Route path='signin' element={<SignIn/>}></Route>
-        </Route>
+    // <Router>
+    //   <CursorFX />
+    //   <Routes>
+    //     <Route path='/' element={<AuthPage/>}>
+    //       <Route path='signup' element={<SignUp/>}></Route>
+    //       <Route path='signin' element={<SignIn/>}></Route>
+    //     </Route>
 
-        <Route path='/crud' element={<LandingPage/>}>
-          {/* <Route path='createquiz' element={<CreateQuiz/>}></Route>
-          <Route path='joinquiz' element={<JoinQuiz/>}></Route> */}
-        </Route>
+    //     <Route path='/crud' element={<LandingPage/>}>
+    //       {/* <Route path='createquiz' element={<CreateQuiz/>}></Route>
+    //       <Route path='joinquiz' element={<JoinQuiz/>}></Route> */}
+    //     </Route>
 
         
-      </Routes>
-       {/* <AuthPage/> */}
-    </Router>
+    //   </Routes>
+    //    {/* <AuthPage/> */}
+    // </Router>
+    <All_routes/>
   )
 }
   

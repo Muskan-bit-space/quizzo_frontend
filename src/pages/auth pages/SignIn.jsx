@@ -1,6 +1,7 @@
 import React , {useRef} from 'react'
-import Auth_Handler  from '../api/Auth_Handler';
-import auth from '../lib/auth'
+import Auth_Handler from "../../api/Auth_Handler";
+import auth from "../../lib/auth";
+
 const SignIn = () => {
   let emailref=useRef()
   let passwordref=useRef()

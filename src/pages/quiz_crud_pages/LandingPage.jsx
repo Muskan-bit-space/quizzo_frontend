@@ -1,7 +1,7 @@
-import React ,{useState} from 'react'
+import React ,{useState, useNavigate} from 'react'
 import CreateQuiz from './CreateQuiz'
 import JoinQuiz from './JoinQuiz'
-import RouteCreateQuiz from './RouteCreateQuiz'
+// import RouteCreateQuiz from './RouteCreateQuiz'
 const LandingPage = () => {
     const [val,setVal]=useState(0);
     function cqhandler(){
@@ -28,21 +28,15 @@ const LandingPage = () => {
         }
         
     }
+    const navigate=useNavigate()
   return (
     // <>
-    //     <Element/>
-    // </>
 
-    <Router>
-            <Routes>
-                {/* <Route path="/" element={<CreateQuiz/>}> */}
-                
-                    <Route path="/create-quiz" element={<RouteCreateQuiz/>}/>
-                    <Route path="/join-question" element={<JoinQuiz/>}/>
-                {/* </Route> */}
-                {/* <Route path="" element=""/> */}
-            </Routes>
-        </Router>
+        <>
+            <button onClick={() => navigate('/createquiz')}>create</button>
+            <br />
+            <button onClick={() => navigate('/joinquiz')}>join</button>
+        </>
   )
 }
 
