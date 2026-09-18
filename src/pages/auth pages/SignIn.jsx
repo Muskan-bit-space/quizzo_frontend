@@ -1,8 +1,10 @@
 import React , {useRef} from 'react'
+import {useNavigate } from 'react-router-dom';
 import Auth_Handler from "../../api/Auth_Handler";
-import auth from "../../lib/auth";
+// import auth from "../../lib/auth";
 
 const SignIn = () => {
+  const navigate=useNavigate();
   let emailref=useRef()
   let passwordref=useRef()
   async function signin(){
@@ -16,7 +18,8 @@ const SignIn = () => {
     //then console log the ans
 
     //now set this as local storage ka item
-    auth.token=response_of_signin_req.data.token;
+    // auth.token=response_of_signin_req.data.token;
+    navigate('/crud')
     
   }
 

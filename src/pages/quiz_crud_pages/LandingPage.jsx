@@ -1,42 +1,22 @@
-import React, {useState} from "react";
-import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
-// import RouteCreateQuiz from './RouteCreateQuiz'
+import React from "react";
+import { useNavigate } from "react-router-dom";
+
 const LandingPage = () => {
-    const [val,setVal]=useState(0);
-    function cqhandler(){
-        setVal(1);
-    }
-    function jqhandler(){
-        setVal(2);
-    }
-    
-    function Element(){
-        if(val==0){
-            return<div>
-                Landing Page
+  const navigate = useNavigate();
 
-                <button onClick={jqhandler}>join quiz</button>
-                <button onClick={cqhandler}>create quiz</button>
-            </div>
-        }
-        else if (val==1) {
-            return <RouteCreateQuiz/>
-        }
-        else if (val==2) {
-            return <JoinQuiz></JoinQuiz>
-        }
-        
-    }
-    const navigate=useNavigate()
   return (
-    // <>
+    <div>
+      <h1>Landing Page</h1>
 
-        <>
-            <button onClick={() => navigate('createquiz')}>create</button>
-            <br />
-            <button onClick={() => navigate('joinquiz')}>join</button>
-        </>
-  )
-}
+      <button onClick={() => navigate("/crud/createquiz")}>
+        Create Quiz
+      </button>
 
-export default LandingPage
+      <button onClick={() => navigate("/crud/joinquiz")}>
+        Join Quiz
+      </button>
+    </div>
+  );
+};
+
+export default LandingPage;

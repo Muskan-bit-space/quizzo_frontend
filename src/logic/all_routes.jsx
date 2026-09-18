@@ -15,36 +15,26 @@ export default function all_routes(){
     //state variables
     return(
         <Router>
-                  <CursorFX />
-            
+                  <CursorFX />            
             {/* this wraps the  */}
             <Routes>
-                <Route path='/' element={<Welcome/>}>
-                    
+                <Route path="/" element={<Welcome />} />
 
+                <Route path="/auth" element={<AuthPage />}>
+                    <Route path="signup" element={<SignUp />} />
+                    <Route path="signin" element={<SignIn />} />
                 </Route>
 
-                <Route path='/auth' element={<AuthPage/>}>
+                <Route path="/crud" element={<LandingPage />} />
 
-                        <Route path='signup' element={<SignUp/>}></Route>
-                        <Route path='signin' element={<SignIn/>}></Route>
-                </Route>
+                <Route path="/crud/createquiz" element={<CreateQuiz />} />
 
-                <Route path='/crud' element={<LandingPage/>}>
-                    </Route>
+                <Route
+                    path="/crud/createquiz/create-question"
+                    element={<CreateQ />}
+                />
 
-                    <Route path='/crud/createquiz' element={<CreateQuiz/>}>
-                 </Route>
-                        <Route path="/crud/createquiz/create-question" element={<CreateQ/>}></Route>
-
-                 {/* </Route> */}
-
-                {/* now for adding the element */}
-                    <Route path='joinquiz' element={<JoinQuiz/>}/>
-
-                {/* </Route> */}
-
-            
+                <Route path="/crud/joinquiz" element={<JoinQuiz />} />
             </Routes>
         </Router>
 
