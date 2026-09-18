@@ -34,7 +34,7 @@ const SignIn = () => {
           <input id='signin-password' type="password" placeholder="Enter your password" ref={passwordref}/>
         </div>
 
-        <button  className="submit-btn" onClick={signin}>SIGN IN</button>
+        <button  type="button" className="submit-btn" onClick={signin}>SIGN IN</button>
         {/* <button type="submit" className="submit-btn" onClick={signin}>SIGN IN</button> */}
       </form>
     </div>

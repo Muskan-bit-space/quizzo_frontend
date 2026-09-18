@@ -1,6 +1,7 @@
 import axios_instance from "./axios";
 // import {jwtsetter} from "../lib/auth"
 let token=1;
+import auth from '../lib/auth'
 async function signup(email,password){
     let query='/auth/signup'
     const user=await axios_instance(
@@ -17,22 +18,37 @@ async function signup(email,password){
 }
 async function signin(email,password){
     let query='/auth/signin'
-    const response=await axios_instance(
-        {
-            method:'post',
-            url:query,
-            data:{
-                email,
-                password
+    try{
+        const response=await axios_instance(
+            {
+                method:'post',
+                url:query,
+                data:{
+                    email,
+                    password
+                }
             }
-        }
-    );
-    token=response.data.token;
+        );
+        token=response.data.token;
     // jwtsetter(token);
     
     // console.log("token val at frontend: ", token)
-    return response
-    // console.log(user);
+        try{
+            auth.token=token;
+            console.log(auth.token)
+                
+            }
+        catch(e){
+            console.log("error while setting the localstorage mei jwt: ",e.message)
+
+        }
+            // console.log(user);
+        return response
+
+    }
+    catch(e){
+        console.log("err while using signin handler in frontend: ", e.message)
+    }
 }
 const Auth_Handler={
     signup,signin
