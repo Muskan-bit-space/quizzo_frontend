@@ -1,68 +1,124 @@
-// import env from '../../backend/env'
-import { useState } from 'react'
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-    Link,
-    useNavigate,
-    Outlet,
-} from "react-router-dom";
-import AuthPage from './pages/auth pages/AuthPage'
-import SignUp from './pages/auth pages/SignUp.jsx';
-import SignIn from './pages/auth pages/SignIn';
-import LandingPage from './pages/quiz_crud_pages/LandingPage.jsx';
-import CreateQuiz from './pages/quiz_crud_pages/CreateQuiz.jsx';
-import JoinQuiz from './pages/quiz_crud_pages/JoinQuiz.jsx';
-// const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+import { useState, useEffect } from "react";
+
+import { io } from "socket.io-client";
+
 import { BACKEND_URL } from "../config";
 
-import {io} from "socket.io-client"
-import { useEffect } from 'react';
-import CursorFX from './CursorFX.jsx';
-//req  bhejo to backend for hte socket connection
+import All_routes from "./logic/All_routes.jsx";
 
-import All_routes from './logic/All_routes.jsx';
+import { AuthProvider } from "./context/AuthContext.jsx";
 
-// import SignIn
+
 function App() {
-  const [socket,setSocket]=useState(null);
-  const [auth_option,setAuth_option]=useState(null)
-  useEffect(()=>{
-    const s=io(BACKEND_URL);
-    setSocket(s);
-    return ()=>s.disconnect()  //cleanup function
-  },[])
 
-  useEffect(()=>{
-    if(!socket)return;
-    socket.emit('join-quiz','i wanna join the quiz');
-  },[socket])
+    const [socket, setSocket] = useState(null);
 
 
-  function signuphandler() {
-    return <SignUp/>
-  }
-  return (
-    // <Router>
-    //   <CursorFX />
-    //   <Routes>
-    //     <Route path='/' element={<AuthPage/>}>
-    //       <Route path='signup' element={<SignUp/>}></Route>
-    //       <Route path='signin' element={<SignIn/>}></Route>
-    //     </Route>
+    useEffect(() => {
 
-    //     <Route path='/crud' element={<LandingPage/>}>
-    //       {/* <Route path='createquiz' element={<CreateQuiz/>}></Route>
-    //       <Route path='joinquiz' element={<JoinQuiz/>}></Route> */}
-    //     </Route>
+        const s = io(BACKEND_URL);
+
+        setSocket(s);
+
+        return () => {
+            s.disconnect();
+        };
+
+    }, []);
+
+
+    useEffect(() => {
+
+        if (!socket) return;
+
+        socket.emit(
+            "join-quiz",
+            "i wanna join the quiz"
+        );
+
+    }, [socket]);
+
+
+    return (
+
+        <AuthProvider>
+
+            <All_routes />
+
+        </AuthProvider>
+
+    );
+}
+
+
+export default App;
+
+
+// // import env from '../../backend/env'
+// import { useState } from 'react'
+// import {
+//     BrowserRouter as Router,
+//     Routes,
+//     Route,
+//     Link,
+//     useNavigate,
+//     Outlet,
+// } from "react-router-dom";
+// import AuthPage from './pages/auth pages/AuthPage'
+// import SignUp from './pages/auth pages/SignUp.jsx';
+// import SignIn from './pages/auth pages/SignIn';
+// import LandingPage from './pages/quiz_crud_pages/LandingPage.jsx';
+// import CreateQuiz from './pages/quiz_crud_pages/CreateQuiz.jsx';
+// import JoinQuiz from './pages/quiz_crud_pages/JoinQuiz.jsx';
+// // const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+// import { BACKEND_URL } from "../config";
+
+// import {io} from "socket.io-client"
+// import { useEffect } from 'react';
+// import CursorFX from './CursorFX.jsx';
+// //req  bhejo to backend for hte socket connection
+
+// import All_routes from './logic/All_routes.jsx';
+
+// // import SignIn
+// function App() {
+//   const [socket,setSocket]=useState(null);
+//   const [auth_option,setAuth_option]=useState(null)
+//   useEffect(()=>{
+//     const s=io(BACKEND_URL);
+//     setSocket(s);
+//     return ()=>s.disconnect()  //cleanup function
+//   },[])
+
+//   useEffect(()=>{
+//     if(!socket)return;
+//     socket.emit('join-quiz','i wanna join the quiz');
+//   },[socket])
+
+
+//   function signuphandler() {
+//     return <SignUp/>
+//   }
+//   return (
+//     // <Router>
+//     //   <CursorFX />
+//     //   <Routes>
+//     //     <Route path='/' element={<AuthPage/>}>
+//     //       <Route path='signup' element={<SignUp/>}></Route>
+//     //       <Route path='signin' element={<SignIn/>}></Route>
+//     //     </Route>
+
+//     //     <Route path='/crud' element={<LandingPage/>}>
+//     //       {/* <Route path='createquiz' element={<CreateQuiz/>}></Route>
+//     //       <Route path='joinquiz' element={<JoinQuiz/>}></Route> */}
+//     //     </Route>
 
         
-    //   </Routes>
-    //    {/* <AuthPage/> */}
-    // </Router>
-    <All_routes/>
-  )
-}
+//     //   </Routes>
+//     //    {/* <AuthPage/> */}
+//     // </Router>
+//     <All_routes/>
+//   )
+// }
   
-export default App
+// export default App
