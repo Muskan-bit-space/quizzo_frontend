@@ -7,6 +7,7 @@ import { BACKEND_URL } from "../config";
 import All_routes from "./logic/All_routes.jsx";
 
 import { AuthProvider } from "./context/AuthContext.jsx";
+import { QuizDraftProvider } from "./context/QuizDraftContext.jsx";
 
 
 function App() {
@@ -42,9 +43,9 @@ function App() {
     return (
 
         <AuthProvider>
-
-            <All_routes />
-
+            <QuizDraftProvider>
+                <All_routes />
+            </QuizDraftProvider>
         </AuthProvider>
 
     );
