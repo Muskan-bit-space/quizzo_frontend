@@ -2,9 +2,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuizDraft } from "../../context/QuizDraftContext.jsx";
-// import "./CreateQuiz.css";
+import "./CreateQuiz.css";
 
-const CreateQuiz = () => {
+export default function CreateQuiz() {
     const navigate = useNavigate();
 
     const {
@@ -16,102 +16,110 @@ const CreateQuiz = () => {
 
     function handleFinishQuiz() {
         if (!quiz.title.trim()) {
-            alert("Please enter a quiz title.");
+            alert("Enter a title for your quiz.");
             return;
         }
 
         if (quiz.questions.length === 0) {
-            alert("Please add at least one question.");
+            alert("Add at least one question before finishing.");
             return;
         }
 
-        // UI-only for now. Backend integration comes next.
-        console.log("Quiz draft:", quiz);
-
-        alert(
-            "Quiz draft is ready! Database submission is not connected yet."
-        );
+        // Backend submission will be implemented next.
+        console.log("Quiz ready for submission:", quiz);
+        alert("Quiz validated. Backend submission is not connected yet.");
     }
 
-    function handleStartNewQuiz() {
-        resetQuiz();
+    function handleReset() {
+        if (
+            window.confirm(
+                "Clear the quiz title, description, and all questions?"
+            )
+        ) {
+            resetQuiz();
+        }
     }
 
     return (
-        <main className="quiz-page">
-            <header className="quiz-header">
+        <main className="qb-page">
+            <header className="qb-header">
                 <button
-                    className="back-button"
+                    type="button"
+                    className="qb-back-btn"
                     onClick={() => navigate("/crud")}
                 >
-                    ← Dashboard
+                    &lt; DASHBOARD
                 </button>
 
-                <span className="header-label">
-                    QUIZ BUILDER
+                <span className="qb-system-label">
+                    QUIZLY // QUIZ BUILDER
+                </span>
+
+                <span className="qb-status">
+                    <span className="qb-status-dot" />
+                    DRAFT
                 </span>
             </header>
 
-            <section className="quiz-content">
-                <div className="page-heading">
-                    <div>
-                        <p className="eyebrow">CREATE SOMETHING NEW</p>
-                        <h1>Build your quiz.</h1>
-                        <p className="page-subtitle">
-                            Set up your quiz and add questions
-                            one at a time.
-                        </p>
-                    </div>
+            <div className="qb-container">
+                <div className="qb-page-title">
+                    <p className="qb-terminal-line">
+                        {">"} INITIALIZE_NEW_QUIZ
+                    </p>
 
-                    <div className="question-count">
-                        <strong>{quiz.questions.length}</strong>
-                        <span>
-                            {quiz.questions.length === 1
-                                ? "Question"
-                                : "Questions"}
-                        </span>
-                    </div>
+                    <h1 className="glitch" data-text="CREATE QUIZ">
+                        CREATE QUIZ
+                    </h1>
+
+                    <p className="qb-muted">
+                        Configure your quiz, construct your questions,
+                        and prepare it for deployment.
+                    </p>
                 </div>
 
-                <section className="quiz-card">
-                    <div className="section-heading">
-                        <span className="step-number">01</span>
+                <section className="qb-panel">
+                    <div className="qb-panel-heading">
+                        <span className="qb-step">01</span>
+
                         <div>
-                            <h2>Quiz details</h2>
-                            <p>Give your quiz a name and purpose.</p>
+                            <h2>QUIZ CONFIGURATION</h2>
+                            <p className="qb-muted">
+                                Define the basic information.
+                            </p>
                         </div>
                     </div>
 
-                    <div className="field-group">
+                    <div className="qb-field">
                         <label htmlFor="quiz-title">
-                            Quiz title <span>*</span>
+                            QUIZ_TITLE <span>*</span>
                         </label>
 
                         <input
                             id="quiz-title"
                             type="text"
-                            placeholder="e.g. JavaScript Fundamentals"
-                            value={quiz.title}
                             maxLength={100}
+                            placeholder="e.g. JAVASCRIPT_FUNDAMENTALS"
+                            value={quiz.title}
                             onChange={(e) =>
-                                updateQuizDetails(
-                                    "title",
-                                    e.target.value
-                                )
+                                updateQuizDetails("title", e.target.value)
                             }
                         />
+
+                        <span className="qb-field-hint">
+                            MAX 100 CHARACTERS
+                        </span>
                     </div>
 
-                    <div className="field-group">
+                    <div className="qb-field">
                         <label htmlFor="quiz-description">
-                            Description
+                            QUIZ_DESCRIPTION
                         </label>
 
                         <textarea
                             id="quiz-description"
-                            placeholder="What will people learn from this quiz?"
                             rows={3}
                             maxLength={500}
+                            placeholder="Describe the purpose of this quiz..."
                             value={quiz.description}
                             onChange={(e) =>
                                 updateQuizDetails(
@@ -123,84 +131,88 @@ const CreateQuiz = () => {
                     </div>
                 </section>
 
-                <section className="questions-section">
-                    <div className="section-heading">
-                        <span className="step-number">02</span>
+                <section className="qb-questions-section">
+                    <div className="qb-section-title">
                         <div>
-                            <h2>Your questions</h2>
-                            <p>
-                                Add questions and choose the
-                                correct answer for each.
+                            <p className="qb-terminal-line">
+                                {">"} QUESTION_DATABASE
                             </p>
+
+                            <h2>YOUR QUESTIONS</h2>
                         </div>
+
+                        <span className="qb-counter">
+                            [{String(quiz.questions.length).padStart(2, "0")}]
+                        </span>
                     </div>
 
                     {quiz.questions.length === 0 ? (
-                        <div className="empty-questions">
-                            <div className="empty-icon">＋</div>
-                            <h3>No questions yet</h3>
-                            <p>
-                                Start with your first question.
-                                You can add more whenever you're ready.
+                        <div className="qb-empty">
+                            <span className="qb-empty-symbol">[ + ]</span>
+
+                            <h3>NO QUESTIONS FOUND</h3>
+
+                            <p className="qb-muted">
+                                Your question database is empty.
+                                Initialize your first question to continue.
                             </p>
                         </div>
                     ) : (
-                        <div className="question-list">
+                        <div className="qb-question-list">
                             {quiz.questions.map((question, index) => (
                                 <article
-                                    className="saved-question"
+                                    className="qb-question-card"
                                     key={question.id}
                                 >
-                                    <div className="saved-question-top">
-                                        <span className="question-badge">
-                                            QUESTION {index + 1}
+                                    <div className="qb-question-top">
+                                        <span className="qb-question-number">
+                                            QUESTION_{String(index + 1).padStart(2, "0")}
                                         </span>
 
                                         <button
-                                            className="delete-button"
                                             type="button"
+                                            className="qb-delete-btn"
                                             onClick={() =>
-                                                deleteQuestion(
-                                                    question.id
-                                                )
+                                                deleteQuestion(question.id)
                                             }
-                                            aria-label={`Delete question ${index + 1}`}
                                         >
-                                            Delete
+                                            [ DELETE ]
                                         </button>
                                     </div>
 
-                                    <h3>{question.text}</h3>
+                                    <h3 className="qb-question-text">
+                                        {question.text}
+                                    </h3>
 
-                                    <div className="saved-options">
+                                    <div className="qb-options-grid">
                                         {question.options.map(
                                             (option, optionIndex) => {
-                                                const isCorrect =
+                                                const correct =
                                                     optionIndex ===
                                                     question.correctOption;
 
                                                 return (
                                                     <div
                                                         key={optionIndex}
-                                                        className={`saved-option ${
-                                                            isCorrect
-                                                                ? "correct-option"
+                                                        className={`qb-option ${
+                                                            correct
+                                                                ? "qb-option-correct"
                                                                 : ""
                                                         }`}
                                                     >
-                                                        <span>
+                                                        <span className="qb-option-letter">
                                                             {String.fromCharCode(
                                                                 65 + optionIndex
                                                             )}
                                                         </span>
 
-                                                        <span>
+                                                        <span className="qb-option-text">
                                                             {option}
                                                         </span>
 
-                                                        {isCorrect && (
-                                                            <span className="correct-label">
-                                                                Correct
+                                                        {correct && (
+                                                            <span className="qb-correct-tag">
+                                                                [ CORRECT ]
                                                             </span>
                                                         )}
                                                     </div>
@@ -214,39 +226,40 @@ const CreateQuiz = () => {
                     )}
 
                     <button
-                        className="add-question-button"
                         type="button"
+                        className="qb-add-btn"
                         onClick={() =>
                             navigate(
                                 "/crud/createquiz/create-question"
                             )
                         }
                     >
-                        <span className="plus-symbol">＋</span>
-                        Add a question
+                        + ADD QUESTION
                     </button>
                 </section>
 
-                <footer className="quiz-footer">
+                <footer className="qb-footer">
                     <button
-                        className="secondary-button"
                         type="button"
-                        onClick={handleStartNewQuiz}
+                        className="qb-reset-btn"
+                        onClick={handleReset}
                     >
-                        Start over
+                        RESET DRAFT
                     </button>
 
                     <button
-                        className="primary-button"
                         type="button"
+                        className="qb-finish-btn pulse"
                         onClick={handleFinishQuiz}
                     >
-                        Finish quiz →
+                        FINISH QUIZ &gt;&gt;
                     </button>
                 </footer>
-            </section>
+
+                <p className="qb-footer-note">
+                    QUIZLY TERMINAL // LOCAL DRAFT MODE
+                </p>
+            </div>
         </main>
     );
-};
-
-export default CreateQuiz;
+}

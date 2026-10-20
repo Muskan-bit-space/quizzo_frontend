@@ -2,9 +2,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuizDraft } from "../../context/QuizDraftContext.jsx";
-// import "./CreateQuiz.css";
+import "./CreateQuiz.css";
 
-const CreateQ = () => {
+export default function CreateQ() {
     const navigate = useNavigate();
     const { addQuestion } = useQuizDraft();
 
@@ -26,33 +26,29 @@ const CreateQ = () => {
         setError("");
 
         if (!questionText.trim()) {
-            setError("Please enter the question.");
+            setError("QUESTION TEXT IS REQUIRED.");
             return;
         }
 
         if (options.some((option) => !option.trim())) {
-            setError("Please fill in all four options.");
+            setError("ALL FOUR ANSWER OPTIONS ARE REQUIRED.");
             return;
         }
 
-        const normalizedOptions = options.map((option) =>
-            option.trim()
+        const cleanedOptions = options.map((option) => option.trim());
+
+        const uniqueOptions = new Set(
+            cleanedOptions.map((option) => option.toLowerCase())
         );
 
-        if (
-            new Set(
-                normalizedOptions.map((option) =>
-                    option.toLowerCase()
-                )
-            ).size !== normalizedOptions.length
-        ) {
-            setError("Each option must be different.");
+        if (uniqueOptions.size !== cleanedOptions.length) {
+            setError("DUPLICATE OPTIONS DETECTED. USE UNIQUE ANSWERS.");
             return;
         }
 
         addQuestion({
             text: questionText.trim(),
-            options: normalizedOptions,
+            options: cleanedOptions,
             correctOption,
         });
 
@@ -60,54 +56,64 @@ const CreateQ = () => {
     }
 
     return (
-        <main className="quiz-page">
-            <header className="quiz-header">
+        <main className="qb-page">
+            <header className="qb-header">
                 <button
-                    className="back-button"
                     type="button"
+                    className="qb-back-btn"
                     onClick={() => navigate("/crud/createquiz")}
                 >
-                    ← Back to quiz
+                    &lt; BACK TO QUIZ
                 </button>
 
-                <span className="header-label">
-                    QUESTION EDITOR
+                <span className="qb-system-label">
+                    QUIZLY // QUESTION EDITOR
+                </span>
+
+                <span className="qb-status">
+                    <span className="qb-status-dot" />
+                    EDIT MODE
                 </span>
             </header>
 
-            <section className="question-editor-content">
-                <div className="page-heading">
-                    <div>
-                        <p className="eyebrow">ADD TO YOUR QUIZ</p>
-                        <h1>Write a question.</h1>
-                        <p className="page-subtitle">
-                            Make it clear, add the options,
-                            and select the correct answer.
-                        </p>
-                    </div>
+            <div className="qb-container qb-editor-container">
+                <div className="qb-page-title">
+                    <p className="qb-terminal-line">
+                        {">"} NEW_QUESTION --CREATE
+                    </p>
+
+                    <h1 className="glitch" data-text="QUESTION EDITOR">
+                        QUESTION EDITOR
+                    </h1>
+
+                    <p className="qb-muted">
+                        Enter your question, configure the answer options,
+                        and identify the correct response.
+                    </p>
                 </div>
 
-                <form
-                    className="quiz-card question-form"
-                    onSubmit={handleDone}
-                >
-                    <div className="section-heading">
-                        <span className="step-number">Q</span>
+                <form className="qb-panel" onSubmit={handleDone}>
+                    <div className="qb-panel-heading">
+                        <span className="qb-step">Q</span>
+
                         <div>
-                            <h2>Question details</h2>
-                            <p>Your question and its answer choices.</p>
+                            <h2>QUESTION INPUT</h2>
+                            <p className="qb-muted">
+                                All fields marked with * are required.
+                            </p>
                         </div>
                     </div>
 
-                    <div className="field-group">
+                    <div className="qb-field">
                         <label htmlFor="question-text">
-                            Your question <span>*</span>
+                            QUESTION_TEXT <span>*</span>
                         </label>
 
                         <textarea
                             id="question-text"
                             rows={4}
-                            placeholder="e.g. Which keyword declares a constant in JavaScript?"
+                            maxLength={1000}
+                            placeholder="Enter your question here..."
                             value={questionText}
                             onChange={(e) =>
                                 setQuestionText(e.target.value)
@@ -116,100 +122,108 @@ const CreateQ = () => {
                         />
                     </div>
 
-                    <div className="options-heading">
+                    <div className="qb-answer-heading">
                         <div>
-                            <h3>Answer options</h3>
-                            <p>
-                                Select the radio button beside
-                                the correct answer.
+                            <h2>ANSWER_OPTIONS</h2>
+                            <p className="qb-muted">
+                                Select one option as the correct answer.
                             </p>
                         </div>
-                        <span className="required-note">Required</span>
+
+                        <span className="qb-required-label">
+                            4 OPTIONS
+                        </span>
                     </div>
 
-                    <div className="option-editor-list">
-                        {options.map((option, index) => (
-                            <div
-                                className="option-editor"
-                                key={index}
-                            >
-                                <span className="option-letter">
-                                    {String.fromCharCode(65 + index)}
-                                </span>
+                    <div className="qb-editor-options">
+                        {options.map((option, index) => {
+                            const letter = String.fromCharCode(65 + index);
+                            const selected = correctOption === index;
 
-                                <input
-                                    id={`option-${index}`}
-                                    type="text"
-                                    placeholder={`Enter option ${String.fromCharCode(65 + index)}`}
-                                    value={option}
-                                    onChange={(e) =>
-                                        updateOption(
-                                            index,
-                                            e.target.value
-                                        )
-                                    }
-                                    aria-label={`Option ${String.fromCharCode(65 + index)}`}
-                                />
-
-                                <label
-                                    className={`correct-selector ${
-                                        correctOption === index
-                                            ? "selected"
-                                            : ""
+                            return (
+                                <div
+                                    className={`qb-editor-option ${
+                                        selected ? "qb-editor-option-selected" : ""
                                     }`}
-                                    htmlFor={`correct-${index}`}
-                                    title="Mark as correct answer"
+                                    key={index}
                                 >
+                                    <span className="qb-option-letter">
+                                        {letter}
+                                    </span>
+
                                     <input
-                                        id={`correct-${index}`}
-                                        type="radio"
-                                        name="correct-option"
-                                        checked={
-                                            correctOption === index
+                                        id={`option-${index}`}
+                                        type="text"
+                                        maxLength={300}
+                                        placeholder={`OPTION_${letter}`}
+                                        value={option}
+                                        onChange={(e) =>
+                                            updateOption(index, e.target.value)
                                         }
-                                        onChange={() =>
-                                            setCorrectOption(index)
-                                        }
+                                        aria-label={`Option ${letter}`}
                                     />
 
-                                    <span>
-                                        {correctOption === index
-                                            ? "Correct"
-                                            : "Choose"}
-                                    </span>
-                                </label>
-                            </div>
-                        ))}
+                                    <label
+                                        htmlFor={`correct-${index}`}
+                                        className="qb-correct-selector"
+                                    >
+                                        <input
+                                            id={`correct-${index}`}
+                                            type="radio"
+                                            name="correct-option"
+                                            checked={selected}
+                                            onChange={() =>
+                                                setCorrectOption(index)
+                                            }
+                                        />
+
+                                        <span>
+                                            {selected
+                                                ? "CORRECT"
+                                                : "SELECT"}
+                                        </span>
+                                    </label>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    <div className="qb-answer-hint">
+                        <span className="qb-status-dot" />
+                        SELECTED ANSWER: OPTION{" "}
+                        {String.fromCharCode(65 + correctOption)}
                     </div>
 
                     {error && (
-                        <p className="form-error" role="alert">
-                            {error}
+                        <p className="qb-error" role="alert">
+                            [ ERROR ] {error}
                         </p>
                     )}
 
-                    <div className="editor-footer">
+                    <div className="qb-editor-footer">
                         <button
                             type="button"
-                            className="secondary-button"
+                            className="qb-reset-btn"
                             onClick={() =>
                                 navigate("/crud/createquiz")
                             }
                         >
-                            Cancel
+                            CANCEL
                         </button>
 
                         <button
                             type="submit"
-                            className="primary-button"
+                            className="qb-finish-btn"
                         >
-                            Done — Save question →
+                            DONE — SAVE QUESTION &gt;&gt;
                         </button>
                     </div>
                 </form>
-            </section>
+
+                <p className="qb-footer-note">
+                    QUIZLY TERMINAL // QUESTION DATA IS NOT YET PERSISTED
+                </p>
+            </div>
         </main>
     );
-};
-
-export default CreateQ;
+}
