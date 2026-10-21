@@ -13,7 +13,7 @@ const SignUp = () => {
     //1. we have submitted the email and password 
     console.log(querystr);
     const a=await Auth_Handler.signup(email_ref.current.value,password_ref.current.value);
-    console.log(a);
+    console.log("hey there: ",a);
   }
 
   return (

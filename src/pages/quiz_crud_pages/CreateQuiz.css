@@ -623,3 +623,9 @@
         transition-duration: 0.01ms;
     }
 }
+
+
+.quiz-save-error {
+    color: var(--danger);
+    overflow-wrap: anywhere;
+}

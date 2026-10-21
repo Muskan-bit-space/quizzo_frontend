@@ -15,6 +15,7 @@ export function QuizDraftProvider({ children }) {
             ...prev,
             [field]: value,
         }));
+        console.log("from the updateQuizDetails function : ", field,": ",value)
     }
 
     function addQuestion(question) {

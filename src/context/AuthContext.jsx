@@ -8,7 +8,6 @@ import {
 import Auth_Handler from "../api/Auth_Handler";
 
 const AuthContext = createContext(null);
-
 export function AuthProvider({ children }) {
 
     const [token, setToken] = useState(
@@ -34,7 +33,8 @@ export function AuthProvider({ children }) {
 
                 const response = await Auth_Handler.me(token);
 
-                setUser(response.data);
+                setUser(response.user);
+                console.log("user state is:",user)
 
             } catch (error) {
 

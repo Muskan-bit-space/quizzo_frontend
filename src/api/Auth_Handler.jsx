@@ -3,21 +3,22 @@ import axios_instance from "./axios";
 async function signup(email, password) {
     const response = await axios_instance({
         method: "post",
-        url: "/auth/signup",
+        url: "/api/auth/signup",
         data: {
             email,
             password,
         },
+        timeout:15000
     });
 
-    return response;
+    return response.data;
 }
 
 async function signin(email, password) {
     try {
         const response = await axios_instance({
             method: "post",
-            url: "/auth/signin",
+            url: "/api/auth/signin",
             data: {
                 email,
                 password,
@@ -39,13 +40,13 @@ async function me(token) {
     try {
         const response = await axios_instance({
             method: "get",
-            url: "/auth/me",
+            url: "/api/auth/me",
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
         console.log("response of me in frontend Auth_Handler: ",response)
-        return response;
+        return response.data;
     } catch (e) {
         console.log(
             "Error while getting current user:",

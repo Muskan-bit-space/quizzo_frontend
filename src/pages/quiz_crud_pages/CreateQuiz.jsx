@@ -1,11 +1,17 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { useQuizDraft } from "../../context/QuizDraftContext.jsx";
+import { useAuth } from "../../context/AuthContext.jsx";
+import Quiz_Handler from "../../api/Quiz_Handler";
+
 import "./CreateQuiz.css";
 
 export default function CreateQuiz() {
     const navigate = useNavigate();
+
+    const { token } = useAuth();
 
     const {
         quiz,
@@ -14,29 +20,130 @@ export default function CreateQuiz() {
         resetQuiz,
     } = useQuizDraft();
 
-    function handleFinishQuiz() {
-        if (!quiz.title.trim()) {
-            alert("Enter a title for your quiz.");
+    const [saving, setSaving] = useState(false);
+    const [saveError, setSaveError] = useState("");
+
+    async function handleFinishQuiz(e) {
+        // Prevent the browser's default form submission and page reload.
+        e.preventDefault();
+
+        // Prevent duplicate submissions while this request is running.
+        if (saving) return;
+
+        setSaveError("");
+
+        // 1. Validate the quiz.
+        if (!quiz.title?.trim()) {
+            setSaveError("Please enter a title for your quiz.");
             return;
         }
 
-        if (quiz.questions.length === 0) {
-            alert("Add at least one question before finishing.");
+        if (
+            !Array.isArray(quiz.questions) ||
+            quiz.questions.length === 0
+        ) {
+            setSaveError(
+                "Add at least one question before finishing."
+            );
             return;
         }
 
-        // Backend submission will be implemented next.
-        console.log("Quiz ready for submission:", quiz);
-        alert("Quiz validated. Backend submission is not connected yet.");
+        if (!token) {
+            setSaveError(
+                "Your session is missing. Please sign in again."
+            );
+            return;
+        }
+
+        // 2. Prepare only the fields required by the backend.
+        const payload = {
+            title: quiz.title.trim(),
+            description: quiz.description?.trim() || "",
+            questions: quiz.questions.map((question) => ({
+                text: question.text,
+                options: [...question.options],
+                correctOption: question.correctOption,
+            })),
+        };
+
+        try {
+            setSaving(true);
+
+            // 3. POST the quiz to the backend.
+            // Quiz_Handler sends the request to /api/quizzes.
+            const result = await Quiz_Handler.createQuiz(
+                payload,
+                token
+            );
+
+            // Support either an API response using "id"
+            // or one exposing MongoDB's "_id".
+            const savedQuizId =
+                result?.quiz?.id ?? result?.quiz?._id;
+
+            if (!savedQuizId) {
+                throw new Error(
+                    "The server response did not contain the saved quiz ID."
+                );
+            }
+
+            // 4. Clear the local draft only after confirmed success.
+            resetQuiz();
+
+            // 5. Navigate after the backend confirms the save.
+            navigate("/crud", {
+                state: {
+                    message:
+                        result.message || "Quiz saved successfully.",
+                    quizId: savedQuizId,
+                },
+            });
+        } catch (error) {
+            console.error("Error saving quiz:", error);
+
+            const status = error.response?.status;
+
+            if (status === 401) {
+                setSaveError(
+                    "Your session expired. Please sign in again."
+                );
+            } else if (status === 400) {
+                setSaveError(
+                    error.response?.data?.error ||
+                    error.response?.data?.message ||
+                    "Some quiz details are invalid. Please check them."
+                );
+            } else if (
+                error.code === "ECONNABORTED" ||
+                error.code === "ETIMEDOUT"
+            ) {
+                setSaveError(
+                    "The request timed out. The quiz might already have " +
+                    "been saved. Check your saved quizzes before retrying."
+                );
+            } else {
+                setSaveError(
+                    error.response?.data?.error ||
+                    error.response?.data?.message ||
+                    error.message ||
+                    "Could not save the quiz. Your draft is still available."
+                );
+            }
+        } finally {
+            setSaving(false);
+        }
     }
 
     function handleReset() {
+        if (saving) return;
+
         if (
             window.confirm(
                 "Clear the quiz title, description, and all questions?"
             )
         ) {
             resetQuiz();
+            setSaveError("");
         }
     }
 
@@ -61,7 +168,12 @@ export default function CreateQuiz() {
                 </span>
             </header>
 
-            <div className="qb-container">
+            {/* The form owns the submission event. */}
+            <form
+                className="qb-container"
+                onSubmit={handleFinishQuiz}
+                noValidate
+            >
                 <div className="qb-page-title">
                     <p className="qb-terminal-line">
                         {">"} INITIALIZE_NEW_QUIZ
@@ -101,12 +213,15 @@ export default function CreateQuiz() {
                             placeholder="e.g. JAVASCRIPT_FUNDAMENTALS"
                             value={quiz.title}
                             onChange={(e) =>
-                                updateQuizDetails("title", e.target.value)
+                                updateQuizDetails(
+                                    "title",
+                                    e.target.value
+                                )
                             }
                         />
 
                         <span className="qb-field-hint">
-                            MAX 100 CHARACTERS
+                            MAX 150 CHARACTERS
                         </span>
                     </div>
 
@@ -142,13 +257,19 @@ export default function CreateQuiz() {
                         </div>
 
                         <span className="qb-counter">
-                            [{String(quiz.questions.length).padStart(2, "0")}]
+                            [
+                            {String(
+                                quiz.questions.length
+                            ).padStart(2, "0")}
+                            ]
                         </span>
                     </div>
 
                     {quiz.questions.length === 0 ? (
                         <div className="qb-empty">
-                            <span className="qb-empty-symbol">[ + ]</span>
+                            <span className="qb-empty-symbol">
+                                [ + ]
+                            </span>
 
                             <h3>NO QUESTIONS FOUND</h3>
 
@@ -162,16 +283,18 @@ export default function CreateQuiz() {
                             {quiz.questions.map((question, index) => (
                                 <article
                                     className="qb-question-card"
-                                    key={question.id}
+                                    key={question.id ?? index}
                                 >
                                     <div className="qb-question-top">
                                         <span className="qb-question-number">
-                                            QUESTION_{String(index + 1).padStart(2, "0")}
+                                            QUESTION_
+                                            {String(index + 1).padStart(2, "0")}
                                         </span>
 
                                         <button
                                             type="button"
                                             className="qb-delete-btn"
+                                            disabled={saving}
                                             onClick={() =>
                                                 deleteQuestion(question.id)
                                             }
@@ -228,6 +351,7 @@ export default function CreateQuiz() {
                     <button
                         type="button"
                         className="qb-add-btn"
+                        disabled={saving}
                         onClick={() =>
                             navigate(
                                 "/crud/createquiz/create-question"
@@ -238,28 +362,38 @@ export default function CreateQuiz() {
                     </button>
                 </section>
 
+                {saveError && (
+                    <p
+                        role="alert"
+                        className="quiz-save-error"
+                    >
+                        {saveError}
+                    </p>
+                )}
+
                 <footer className="qb-footer">
                     <button
                         type="button"
                         className="qb-reset-btn"
+                        disabled={saving}
                         onClick={handleReset}
                     >
                         RESET DRAFT
                     </button>
 
                     <button
-                        type="button"
+                        type="submit"
                         className="qb-finish-btn pulse"
-                        onClick={handleFinishQuiz}
+                        disabled={saving}
                     >
-                        FINISH QUIZ &gt;&gt;
+                        {saving ? "SAVING..." : "FINISH QUIZ >>"}
                     </button>
                 </footer>
 
                 <p className="qb-footer-note">
                     QUIZLY TERMINAL // LOCAL DRAFT MODE
                 </p>
-            </div>
+            </form>
         </main>
     );
 }
