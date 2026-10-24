@@ -26,20 +26,25 @@ const Quiz_Handler = {
             "Content-Type": "application/json",
         },
     });
-    // const response = await axios.post(
-    //   `${BACKEND_URL}/api/quizzes`,
-    //   payload,
-    //   {
-    //     headers: {
-    //       Authorization: `Bearer ${token}`,
-    //       "Content-Type": "application/json",
-    //     },
-    //     timeout: 15000,
-    //   }
-    // );
     console.log("response to quiz save request is : ", response.data)
 
     return response.data;
+  },
+
+  async getMyQuizzes(token) {
+    if (!token) {
+      throw new Error("You must be signed in to fetch your quizzes.");
+    }
+
+    const response = await axios_instance({
+      method: "get",
+      url: "/api/quizzes",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data; // { quizzes: [...] }
   },
 };
 
