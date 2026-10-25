@@ -1,138 +1,34 @@
-import React from "react";
-
-import {
-    Route,
-    BrowserRouter as Router,
-    Routes,
-} from "react-router-dom";
-
-import CursorFX from "../CursorFX.jsx";
-
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import AppLayout from "../components/AppLayout.jsx";
+import Welcome from "../pages/Welcome.jsx";
 import AuthPage from "../pages/auth pages/AuthPage.jsx";
-import SignUp from "../pages/auth pages/SignUp.jsx";
 import SignIn from "../pages/auth pages/SignIn.jsx";
-
+import SignUp from "../pages/auth pages/SignUp.jsx";
 import LandingPage from "../pages/quiz_crud_pages/LandingPage.jsx";
 import CreateQuiz from "../pages/quiz_crud_pages/CreateQuiz.jsx";
 import CreateQ from "../pages/quiz_crud_pages/CreateQ.jsx";
 import JoinQuiz from "../pages/quiz_crud_pages/JoinQuiz.jsx";
-
-import Welcome from "../pages/Welcome.jsx";
-
+import QuizDetail from "../pages/quiz_crud_pages/QuizDetail.jsx";
+import QuizIntro from "../pages/participation/QuizIntro.jsx";
+import QuizPlayer from "../pages/participation/QuizPlayer.jsx";
+import QuizResult from "../pages/participation/QuizResult.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
-
-
-export default function All_routes() {
-
-    return (
-
-        <Router>
-
-            <CursorFX />
-
-            <Routes>
-
-                {/* Public routes */}
-
-                <Route
-                    path="/"
-                    element={<Welcome />}
-                />
-
-                <Route
-                    path="/auth"
-                    element={<AuthPage />}
-                >
-
-                    <Route
-                        path="signup"
-                        element={<SignUp />}
-                    />
-
-                    <Route
-                        path="signin"
-                        element={<SignIn />}
-                    />
-
-                </Route>
-
-
-                {/* Protected routes */}
-
-                <Route element={<ProtectedRoute />}>
-
-                    <Route
-                        path="/crud"
-                        element={<LandingPage />}
-                    />
-
-                    <Route
-                        path="/crud/createquiz"
-                        element={<CreateQuiz />}
-                    />
-
-                    <Route
-                        path="/crud/createquiz/create-question"
-                        element={<CreateQ />}
-                    />
-
-                    <Route
-                        path="/crud/joinquiz"
-                        element={<JoinQuiz />}
-                    />
-
-                </Route>
-
-            </Routes>
-
-        </Router>
-
-    );
+import { EmptyState } from "../components/Feedback.jsx";
+export default function AllRoutes() {
+  return <BrowserRouter><a className="skip-link" href="#main-content">Skip to content</a><Routes><Route element={<AppLayout />}>
+    <Route path="/" element={<Welcome />} />
+    <Route path="/auth" element={<AuthPage />}><Route index element={<Navigate to="signin" replace />} /><Route path="signin" element={<SignIn />} /><Route path="signup" element={<SignUp />} /></Route>
+    <Route element={<ProtectedRoute />}>
+      <Route path="/crud" element={<LandingPage />} />
+      <Route path="/crud/createquiz" element={<CreateQuiz />} />
+      <Route path="/crud/createquiz/create-question" element={<CreateQ />} />
+      <Route path="/crud/createquiz/questions/:questionId" element={<CreateQ />} />
+      <Route path="/crud/joinquiz" element={<JoinQuiz />} />
+      <Route path="/crud/quizzes/:quizId" element={<QuizDetail />} />
+      <Route path="/q/:shareId" element={<QuizIntro />} />
+      <Route path="/attempts/:attemptId" element={<QuizPlayer />} />
+      <Route path="/attempts/:attemptId/result" element={<QuizResult />} />
+    </Route>
+    <Route path="*" element={<div className="page"><EmptyState title="This page took a wrong turn." description="Let's get you back to something good." to="/" action="Back to home" /></div>} />
+  </Route></Routes></BrowserRouter>;
 }
-
-
-// ------------------------------------------------------------------
-
-// import React from "react"
-// import { Route, BrowserRouter as Router, Routes } from "react-router-dom"
-// import CursorFX from '../CursorFX.jsx';
-
-// import AuthPage from '../pages/auth pages/AuthPage.jsx'
-// import SignUp from '../pages/auth pages/SignUp.jsx';
-// import SignIn from '../pages/auth pages/SignIn.jsx';
-// import LandingPage from '../pages/quiz_crud_pages/LandingPage.jsx';
-// import CreateQuiz from '../pages/quiz_crud_pages/CreateQuiz.jsx';
-// import CreateQ from '../pages/quiz_crud_pages/CreateQ.jsx';
-// import JoinQuiz from '../pages/quiz_crud_pages/JoinQuiz.jsx';
-// import Welcome from "../pages/Welcome.jsx";
-// export default function all_routes(){
-
-//     //state variables
-//     return(
-//         <Router>
-//                   <CursorFX />            
-//             {/* this wraps the  */}
-//             <Routes>
-//                 <Route path="/" element={<Welcome />} />
-
-//                 <Route path="/auth" element={<AuthPage />}>
-//                     <Route path="signup" element={<SignUp />} />
-//                     <Route path="signin" element={<SignIn />} />
-//                 </Route>
-
-//                 <Route path="/crud" element={<LandingPage />} />
-
-//                 <Route path="/crud/createquiz" element={<CreateQuiz />} />
-
-//                 <Route
-//                     path="/crud/createquiz/create-question"
-//                     element={<CreateQ />}
-//                 />
-
-//                 <Route path="/crud/joinquiz" element={<JoinQuiz />} />
-//             </Routes>
-//         </Router>
-
-//     )
-    
-// }

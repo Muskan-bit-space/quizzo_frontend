@@ -1,100 +1,12 @@
-import React, { useEffect, useState } from "react";
-import "./MyQuizzes.css";
-import { useAuth } from "../../context/AuthContext";
-import Quiz_Handler from "../../api/Quiz_Handler";
-
-export default function MyQuizzes() {
-  const { token } = useAuth();
-
-  const [quizzes, setQuizzes] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    // Only fetch when a token is present
-    if (!token) {
-      setQuizzes([]);
-      return;
-    }
-
-    let cancelled = false;
-
-    async function fetchQuizzes() {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const data = await Quiz_Handler.getMyQuizzes(token);
-        if (!cancelled) {
-          setQuizzes(data.quizzes ?? []);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          console.error("Failed to load quizzes:", err);
-          setError("Failed to load your quizzes. Please try again.");
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    }
-
-    fetchQuizzes();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [token]);
-
-  return (
-    <section className="my-quizzes">
-      <h2 className="my-quizzes-heading">MY QUIZZES</h2>
-
-      {loading && (
-        <div className="my-quizzes-empty">
-          <p>{">"} LOADING_QUIZZES...</p>
-          <span>Fetching your quizzes from the database.</span>
-        </div>
-      )}
-
-      {!loading && error && (
-        <div className="my-quizzes-empty">
-          <p style={{ color: "var(--danger)" }}>{">"} ERROR</p>
-          <span style={{ color: "var(--danger)" }}>{error}</span>
-        </div>
-      )}
-
-      {!loading && !error && quizzes.length === 0 && (
-        <div className="my-quizzes-empty">
-          <p>{">"} NO_QUIZZES_FOUND</p>
-          <span>Create your first quiz to see it here.</span>
-        </div>
-      )}
-
-      {!loading && !error && quizzes.length > 0 && (
-        <div className="my-quizzes-list">
-          {quizzes.map((quiz, index) => (
-            <article className="my-quiz-card" key={String(quiz.id)}>
-              <span className="my-quiz-index">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-
-              <h3 className="my-quiz-name">{quiz.title}</h3>
-
-              <div className="my-quiz-card-footer">
-                <span className="my-quiz-status">
-                  {"// "}{quiz.questionCount} Q
-                </span>
-
-                <span className="my-quiz-arrow" aria-hidden="true">
-                  &gt;_
-                </span>
-              </div>
-            </article>
-          ))}
-        </div>
-      )}
-    </section>
-  );
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import Icon from "../../components/Icons.jsx";
+import { EmptyState, ErrorState, Loading } from "../../components/Feedback.jsx";
+import { formatDate } from "../../lib/quiz.js";
+export default function MyQuizzes({ quizzes, loading, error, reload }) {
+  const [search, setSearch] = useState("");
+  const visible = quizzes.filter(quiz => quiz.title.toLowerCase().includes(search.toLowerCase()));
+  return <section className="my-quizzes"><div className="section-heading"><div><span className="eyebrow">YOUR IDEAS, OUT IN THE WORLD</span><h2>My quizzes <span className="count-badge">{quizzes.length}</span></h2></div><label className="search-field"><Icon name="search" size={18} /><input aria-label="Search your quizzes" placeholder="Find a quiz…" value={search} onChange={event => setSearch(event.target.value)} /></label></div>
+    {loading ? <Loading label="Gathering your quizzes…" /> : error ? <ErrorState error={error} onRetry={reload} /> : !quizzes.length ? <EmptyState title="Your first quiz belongs here." description="Start with a question. We'll help you take it from there." to="/crud/createquiz" action="Create a quiz" /> : !visible.length ? <EmptyState title="No matches just yet." description="Try a different title or clear your search." /> : <div className="quiz-grid">{visible.map((quiz, index) => <Link className="quiz-card" key={quiz.id || quiz._id} to={`/crud/quizzes/${quiz.id || quiz._id}`} state={{ quiz }}><div className="quiz-card-top"><span className={`quiz-glyph shade-${index % 3}`}><Icon name="quiz" size={24} /></span><span className={`tag ${quiz.shareId ? "green" : ""}`}>{quiz.shareId ? "Ready to share" : "Saved"}</span></div><h3>{quiz.title}</h3><p>{quiz.description || "A fresh challenge, ready for curious minds."}</p><div className="quiz-card-meta"><span>{quiz.questionCount} questions</span><span>Created {formatDate(quiz.createdAt)}</span></div><div className="quiz-card-footer"><span><Icon name="users" size={16} />{quiz.attemptCount == null ? "View participants" : `${quiz.attemptCount} completed attempts`}</span><Icon name="arrow" size={18} /></div></Link>)}</div>}
+  </section>;
 }

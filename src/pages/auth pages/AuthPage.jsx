@@ -1,29 +1,5 @@
-import React from 'react'
-import { Outlet, Link } from 'react-router-dom';
-
-import SignUp from './SignUp'
-import SignIn from './SignIn'
-const AuthPage = () => {
-
-  return (
-    <div className="auth-container">
-      <div className="auth-title">
-        <h1 className="glitch" data-text="QUIZLY">QUIZLY</h1>
-      </div>
-      <nav className="auth-nav">
-        <button className="auth-btn pulse">
-          <Link to="signup">SIGN UP</Link>
-        </button>
-        <span className="nav-separator">|</span>
-        <button className="auth-btn pulse">
-          <Link to="signin">SIGN IN</Link>
-        </button>
-      </nav>
-      <div className="auth-outlet">
-        <Outlet/>
-      </div>
-    </div>
-  )
+import { Outlet } from "react-router-dom";
+import Icon from "../../components/Icons.jsx";
+export default function AuthPage() {
+  return <div className="auth-page page"><aside className="auth-story"><span className="eyebrow">WELCOME TO YOUR NEXT AHA.</span><h1>A curious mind<br />looks good on you.</h1><p>Make something worth asking.<br />Discover something worth knowing.</p><div className="auth-quote"><Icon name="quiz" size={32} /><p>One account for creating quizzes, joining challenges, and keeping track of every result.</p></div><div className="auth-decoration" aria-hidden="true">?</div></aside><section className="auth-card panel"><Outlet /></section></div>;
 }
-
-export default AuthPage

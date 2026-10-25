@@ -1,14 +1,4 @@
-import axios from 'axios';
-
-const axios_instance=axios.create(
-    {
-        baseURL:'http://localhost:4444',
-        // baseURL:'https://quizzo-backend.vercel.app/',
-        timeout:5000,
-        headers: {
-        "Content-Type": "application/json",
-        }
-        // headers:
-    }
-);
-export default axios_instance;
+import axios from "axios";
+import { BACKEND_URL } from "../../config.js";
+const client = axios.create({ baseURL: BACKEND_URL, timeout: 15000, headers: { "Content-Type": "application/json" } });
+export default client;

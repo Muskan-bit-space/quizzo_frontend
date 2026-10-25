@@ -1,16 +1,16 @@
-# React + Vite
+# Quizly frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React/Vite UI for publishing quizzes, sharing links, taking self-paced quizzes, and viewing participant results.
 
-Currently, two official plugins are available:
+- [UI architecture and workflow](documentation/overview.md)
+- [Shared backend contract](documentation/backend-contract.md)
+- [Backend setup](../quizzo_backend/README.md)
+- [Verification status](../quizzo_backend/documentation/verification.md)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Install with `npm.cmd ci`, start the backend, then run `npm.cmd run dev`. Vite proxies `/api` to `http://127.0.0.1:4444` by default. See [.env.example](.env.example) for an alternate proxy destination or separately hosted API.
 
-## React Compiler
+For the complete app on one origin, run `npm.cmd run build` and follow the backend guide to serve this folder's `dist`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+`npm.cmd run dev:demo` is an explicit browser-only preview using sample accounts. It does not use MongoDB or create links that work across devices.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Checks: `npm.cmd test`, `npm.cmd run lint`, `npm.cmd run build`. On restricted Windows environments, build with `npm.cmd run build -- --configLoader native`.

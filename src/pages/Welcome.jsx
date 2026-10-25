@@ -1,11 +1,12 @@
-import React from 'react'
-
-const Welcome = () => {
-  return (
-    <div>
-      WELCOME PAGE
-    </div>
-  )
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/auth-context.js";
+import Icon from "../components/Icons.jsx";
+export default function Welcome() {
+  const { user } = useAuth();
+  return <div className="welcome page">
+    <section className="hero"><div className="hero-copy"><span className="eyebrow"><i className="live-dot" /> KNOWLEDGE IS BETTER SHARED</span><h1>Good questions.<br /><span>Great connections.</span></h1><p>Create a quiz, send a link, and see what everyone knows. A simple space for a little friendly challenge.</p><div className="button-row"><Link className="btn primary large" to={user ? "/crud/createquiz" : "/auth/signup"}>Create your first quiz <Icon name="arrow" /></Link><Link className="btn secondary large" to="/crud/joinquiz"><Icon name="link" />Join a quiz</Link></div><p className="hero-signin">Already have an account? <Link to={user ? "/crud" : "/auth/signin"}>{user ? "Open your workspace" : "Sign in"}</Link></p><div className="hero-tags"><span><Icon name="check" size={15} />Your pace</span><span><Icon name="check" size={15} />Instant scores</span><span><Icon name="check" size={15} />One simple link</span></div></div>
+      <div className="hero-art" aria-label="Example quiz question"><div className="orbit-label">A SMALL QUESTION. A BIG IDEA.</div><div className="example-card"><div className="example-top"><span className="tag">A LITTLE WARM-UP</span><span className="muted small">01 / 04</span></div><div className="example-progress"><span /></div><h2>What makes a<br />great quiz?</h2><div className="example-option"><span>A</span>A spark of curiosity</div><div className="example-option"><span>B</span>A good challenge</div><div className="example-option chosen"><span>C</span>A bit of both <Icon name="check" size={17} /></div><div className="example-bottom"><span>You've got this.</span><Icon name="arrow" /></div></div><div className="floating-score"><span className="icon-box"><Icon name="trophy" /></span><div><strong>That “I knew it!” feeling.</strong><span>Learning, with a little celebration.</span></div></div><span className="art-spark">✳</span></div>
+    </section>
+    <section className="how-section"><div className="section-heading"><div><span className="eyebrow">FROM AN IDEA TO AN AHA.</span><h2>Three steps. Endless curiosity.</h2></div><span className="muted mono small">CREATE → SHARE → DISCOVER</span></div><div className="feature-grid">{[{n:"01",icon:"edit",title:"Make it yours",text:"Write your questions, add answer choices, and build a quiz worth sharing."},{n:"02",icon:"link",title:"Send the invite",text:"Share one link. Everyone signs in and takes the quiz on their own time."},{n:"03",icon:"trophy",title:"See the whole picture",text:"Participants get their score. You see every attempt, all in one place."}].map(item => <article key={item.n} className="feature"><div><Icon name={item.icon} /><span>{item.n}</span></div><h3>{item.title}</h3><p>{item.text}</p></article>)}</div></section>
+  </div>;
 }
-
-export default Welcome

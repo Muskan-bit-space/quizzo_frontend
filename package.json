@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev:demo": "vite --mode demo",
+    "test": "node --test src/lib/*.test.js src/api/*.test.js"
   },
   "dependencies": {
     "axios": "^1.16.1",

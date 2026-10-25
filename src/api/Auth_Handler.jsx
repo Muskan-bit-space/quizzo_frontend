@@ -1,138 +1,24 @@
-import axios_instance from "./axios";
-
-async function signup(email, password) {
-    const response = await axios_instance({
-        method: "post",
-        url: "/api/auth/signup",
-        data: {
-            email,
-            password,
-        },
-        timeout:15000
-    });
-
-    return response.data;
-}
-
-async function signin(email, password) {
-    try {
-        const response = await axios_instance({
-            method: "post",
-            url: "/api/auth/signin",
-            data: {
-                email,
-                password,
-            },
-        });
-
-        return response;
-    } catch (e) {
-        console.log(
-            "Error while using signin handler in frontend:",
-            e.message
-        );
-
-        throw e;
-    }
-}
-
-async function me(token) {
-    try {
-        const response = await axios_instance({
-            method: "get",
-            url: "/api/auth/me",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        console.log("response of me in frontend Auth_Handler: ",response)
-        return response.data;
-    } catch (e) {
-        console.log(
-            "Error while getting current user:",
-            e.message
-        );
-
-        throw e;
-    }
-}
+import client from "./axios.jsx";
+import { DEMO_MODE } from "../../config.js";
+import { demoApi } from "./demoApi.js";
 
 const Auth_Handler = {
-    signup,
-    signin,
-    me,
+  async signup(email, password, name) {
+    if (DEMO_MODE) return demoApi.signup(email, name);
+    const { data } = await client.post("/api/auth/signup", { email, password, name });
+    if (!data || typeof data !== "object" || !(data._id || data.id || data.user)) throw new Error("The account could not be created. Please try again.");
+    return data;
+  },
+  async signin(email, password) {
+    if (DEMO_MODE) return demoApi.signin(email);
+    const { data } = await client.post("/api/auth/signin", { email, password });
+    if (!data?.token || typeof data.token !== "string") throw new Error("Check your email and password and try again.");
+    return data;
+  },
+  async me(token) {
+    if (DEMO_MODE) return demoApi.me(token);
+    const { data } = await client.get("/api/auth/me", { headers: { Authorization: `Bearer ${token}` } });
+    return data;
+  },
 };
-
 export default Auth_Handler;
-// import axios_instance from "./axios";
-// // import {jwtsetter} from "../lib/auth"
-// let token=1;
-// import auth from '../lib/auth'
-// async function signup(email,password){
-//     let query='/auth/signup'
-//     const user=await axios_instance(
-//         {
-//             method:'post',
-//             url:query,
-//             data:{
-//                 email,
-//                 password
-//             }
-//         }
-//     );
-//     console.log(user);
-// }
-// async function signin(email,password){
-//     let query='/auth/signin'
-//     try{
-//         const response=await axios_instance(
-//             {
-//                 method:'post',
-//                 url:query,
-//                 data:{
-//                     email,
-//                     password
-//                 }
-//             }
-//         );
-//         token=response.data.token;
-//     // jwtsetter(token);
-    
-//     // console.log("token val at frontend: ", token)
-//         try{
-//             auth.token=token;
-//             console.log(auth.token)
-                
-//             }
-//         catch(e){
-//             console.log("error while setting the localstorage mei jwt: ",e.message)
-
-//         }
-//             // console.log(user);
-//         return response
-
-//     }
-//     catch(e){
-//         console.log("err while using signin handler in frontend: ", e.message)
-//     }
-// }
-// async function me({ email, password }) {
-//   const {
-//     data: { data },
-//   } = await axios({
-//     method: "get",
-//     url: "/api/auth/me",
-//     headers: {
-//       Authorization: `Bearer ${auth.token || ""}`,
-//     },
-//   });
-//   return data;
-// }
-
-// const Auth_Handler={
-//     signup,signin,me
-// }
-
-// export default Auth_Handler
-// export {token};//------> otherwise you would need to specify all
-// // that you are exporting

@@ -77,7 +77,6 @@ export default function CursorFX() {
         <div className="cursor-trail">
           {Array.from({ length: 10 }).map((_, i) => (
             <span
-              // eslint-disable-next-line react/no-array-index-key
               key={i}
               ref={(el) => {
                 trailRefs.current[i] = el;
