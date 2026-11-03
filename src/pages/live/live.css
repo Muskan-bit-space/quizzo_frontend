@@ -1,0 +1,26 @@
+.live-status { display: flex; align-items: center; justify-content: flex-end; gap: 9px; color: var(--muted); font-size: .8rem; min-height: 38px; }
+.live-offline { background: var(--danger); }
+.live-room-code { display: block; color: var(--accent); font-family: Consolas, monospace; font-size: clamp(2rem, 7vw, 3.7rem); letter-spacing: .15em; margin: 18px 0; overflow-wrap: anywhere; }
+.live-code-input { font-family: Consolas, monospace; letter-spacing: .15em; text-transform: uppercase; }
+.live-waiting h2 { margin: 30px 0 15px; }
+.live-roster, .live-history { list-style: none; padding: 0; margin: 15px 0 0; }
+.live-roster li { display: flex; gap: 12px; align-items: center; border-bottom: 1px solid var(--line); padding: 13px 0; }
+.live-roster strong { font-weight: 500; overflow-wrap: anywhere; }
+.live-roster li > span:last-child { margin-left: auto; }
+.live-controls { margin: 22px 0 30px; }
+.live-countdown { display: flex; flex-direction: column; align-items: center; color: var(--accent); font: 700 2rem Consolas, monospace; }
+.live-countdown.danger { color: var(--danger); }
+.live-countdown small { font: .68rem "DM Sans", sans-serif; color: var(--muted); }
+.live-host-options { padding-left: 24px; color: var(--muted); }
+.live-host-options li { padding: 12px 0; overflow-wrap: anywhere; }
+.live-page .results-panel { margin-top: 28px; }
+.live-history li { border-bottom: 1px solid var(--line); padding: 14px 0; }
+.live-history a { display: flex; flex-direction: column; gap: 7px; }
+.live-history a:hover strong, .live-join-link a { color: var(--accent); }
+.live-join-link { margin-top: 24px; }
+.live-own-row { background: var(--panel-soft); }
+.live-result { margin: 25px 0; }
+.live-result > strong { display: block; font-size: 2.4rem; color: var(--accent); margin: 18px 0; }
+.live-page .player-options:disabled .player-option { cursor: default; opacity: .8; }
+.live-page td:nth-child(2) { white-space: normal; overflow-wrap: anywhere; }
+@media (max-width: 520px) { .live-roster li { flex-wrap: wrap; } .live-page .player-actions { flex-wrap: wrap; } .live-status { justify-content: flex-start; } }

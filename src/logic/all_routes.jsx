@@ -12,6 +12,10 @@ import QuizDetail from "../pages/quiz_crud_pages/QuizDetail.jsx";
 import QuizIntro from "../pages/participation/QuizIntro.jsx";
 import QuizPlayer from "../pages/participation/QuizPlayer.jsx";
 import QuizResult from "../pages/participation/QuizResult.jsx";
+import HostSession from "../pages/live/HostSession.jsx";
+import JoinSession from "../pages/live/JoinSession.jsx";
+import LiveSession from "../pages/live/LiveSession.jsx";
+import SessionResults from "../pages/live/SessionResults.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import { EmptyState } from "../components/Feedback.jsx";
 export default function AllRoutes() {
@@ -24,6 +28,10 @@ export default function AllRoutes() {
       <Route path="/crud/createquiz/create-question" element={<CreateQ />} />
       <Route path="/crud/createquiz/questions/:questionId" element={<CreateQ />} />
       <Route path="/crud/joinquiz" element={<JoinQuiz />} />
+      <Route path="/live/host" element={<HostSession />} />
+      <Route path="/live/join" element={<JoinSession />} />
+      <Route path="/live/:sessionId" element={<LiveSession key="live" />} />
+      <Route path="/live/:sessionId/results" element={<SessionResults />} />
       <Route path="/crud/quizzes/:quizId" element={<QuizDetail />} />
       <Route path="/q/:shareId" element={<QuizIntro />} />
       <Route path="/attempts/:attemptId" element={<QuizPlayer />} />

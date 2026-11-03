@@ -27,5 +27,18 @@ export default function QuizDetail() {
   if (resource.loading) return <Loading label="Opening your quiz…" />;
   if (resource.error) return <div className="page"><ErrorState error={resource.error} onRetry={resource.reload}><Link to="/crud" className="btn secondary">My workspace</Link></ErrorState></div>;
   const quiz = resource.data.quiz;
-  return <div className="page detail-page"><Link className="back-link" to="/crud"><Icon name="back" size={17} />My quizzes</Link>{location.state?.saved && <Notice kind="success"><Icon name="check" size={17} />Quiz saved. {quiz.shareId ? "Your link is ready to share." : "You'll find it in My quizzes."}</Notice>}<div className="page-heading"><div><span className="eyebrow">YOUR QUIZ, AT A GLANCE</span><h1>{quiz.title}</h1><p className="muted">{quiz.description || "A challenge worth sharing."}</p><div className="inline-meta"><span><Icon name="quiz" size={16} />{quiz.questionCount} questions</span><span>Created {formatDate(quiz.createdAt)}</span></div></div><span className={`tag ${quiz.shareId ? "green" : ""}`}>{quiz.shareId ? "Ready to share" : "Saved"}</span></div><SharePanel quiz={quiz} /><Results quizId={quizId} token={token} />{quiz.questions?.length > 0 && <details className="panel owner-questions"><summary>Review quiz questions <span>{quiz.questions.length} questions</span></summary><ol>{quiz.questions.map(question => <li key={question.id || question._id}><strong>{question.text}</strong><p className="muted small">Correct answer: {question.options[question.correctOption]}</p></li>)}</ol></details>}</div>;
+  return <div className="page detail-page">
+    <Link className="back-link" to="/crud"><Icon name="back" size={17} />My quizzes</Link>
+    {location.state?.saved && <Notice kind="success"><Icon name="check" size={17} />Quiz saved. {quiz.shareId ? "Your link is ready to share." : "You'll find it in My quizzes."}</Notice>}
+    <div className="page-heading"><div><span className="eyebrow">YOUR QUIZ, AT A GLANCE</span><h1>{quiz.title}</h1><p className="muted">{quiz.description || "A challenge worth sharing."}</p><div className="inline-meta"><span><Icon name="quiz" size={16} />{quiz.questionCount} questions</span><span>Created {formatDate(quiz.createdAt)}</span></div></div><span className={`tag ${quiz.shareId ? "green" : ""}`}>{quiz.shareId ? "Ready to share" : "Saved"}</span></div>
+    <section className="panel share-panel">
+      <span className="eyebrow">PLAY TOGETHER, IN REAL TIME</span>
+      <div className="section-heading"><h2>Host this quiz live</h2><Icon name="users" /></div>
+      <p>Create a live room for {quiz.title}. Your waiting room will display the 8-character code participants enter to join. Everyone gets 30 seconds per question.</p>
+      <div className="button-row"><Link className="btn primary" to={`/live/host?quizId=${encodeURIComponent(quizId)}`}>Host this quiz live <Icon name="arrow" size={16} /></Link><Link className="btn secondary" to="/live/host">Your live sessions</Link></div>
+    </section>
+    <SharePanel quiz={quiz} />
+    <Results quizId={quizId} token={token} />
+    {quiz.questions?.length > 0 && <details className="panel owner-questions"><summary>Review quiz questions <span>{quiz.questions.length} questions</span></summary><ol>{quiz.questions.map(question => <li key={question.id || question._id}><strong>{question.text}</strong><p className="muted small">Correct answer: {question.options[question.correctOption]}</p></li>)}</ol></details>}
+  </div>;
 }
