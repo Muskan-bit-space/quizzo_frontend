@@ -16,11 +16,13 @@ For the complete app on one origin, run `npm.cmd run build` and follow the backe
 
 ## Deploy the frontend to Vercel
 
-Use the **Vite** framework preset, Build Command `npm run build`, and Output Directory `dist`. Leave Root Directory empty for the frontend-only repository; set it to `frontend` only if the connected repository contains both folders.
+Use the **Vite** framework preset and Output Directory `dist`. [vercel.json](vercel.json) sets Build Command to `npm run build -- --mode vercel`, which loads the public deployment settings in [.env.vercel](.env.vercel). Leave Root Directory empty for the frontend-only repository; set it to `frontend` only if the connected repository contains both folders.
 
 The included [vercel.json](vercel.json) rewrites application URLs to `index.html` so React Router can resolve them. This allows refreshing or directly opening routes such as `/crud`, `/q/:shareId`, and `/live/:sessionId` without Vercel returning `404 NOT_FOUND`. Commit and push this configuration to the connected branch, then redeploy for it to take effect.
 
-For the real app, set `VITE_DEMO_MODE=false` and `VITE_API_URL` to the public backend origin (for example, `https://<your-service>.onrender.com`) in Vercel's environment settings. These values are embedded at build time, so changing them requires a new deployment. The Vite development proxy does not run on Vercel; REST and Socket.IO must reach the separately hosted backend. Set backend `CORS_ORIGIN` to the frontend's exact HTTPS origin.
+The checked-in Vercel settings select the real app with `VITE_DEMO_MODE=false` and `VITE_API_URL=https://quizzo-backend-zvck.onrender.com`. If these variables also exist in Vercel's environment settings, those values take precedence: keep them consistent and check both Production and Preview scopes. These values are embedded at build time, so changing them requires a new deployment. The Vite development proxy does not run on Vercel; REST and Socket.IO reach the same separately hosted backend origin.
+
+For the current production frontend, backend `CORS_ORIGIN` must include `https://quizzo-frontend.vercel.app` (no trailing slash). Additional frontend domains, including Vercel preview URLs, require their own allowed origins. Keep MongoDB credentials and `JWT_SECRET` on the backend; all `VITE_` values are public. Run one backend instance for the current live-room scheduler.
 
 After deployment, open `/auth/signin` directly and refresh it, then sign in and refresh `/crud`. Also verify that a shared quiz link opens from a new tab. If `/` itself returns Vercel's 404, check the deployment/domain and Root Directory settings as well.
 
@@ -50,7 +52,7 @@ For split hosting, keep `VITE_API_URL` pointed at the public backend. The SPA re
 
 1. **Record the failing address and trigger.** Compare `/`, `/auth/signin`, and the affected nested URL. Try both in-app navigation and a direct open/reload. Note the deployed revision and whether the deployment URL and custom domain behave differently.
 2. **Inspect the document request.** Open browser DevTools, select **Network**, enable **Preserve log**, and reload. Inspect the request with type **document**, its status, response body, and headers. A hosting-branded 404 means the entry document was not served. React's own not-found screen means the app loaded and its route matching needs inspection. An API request returning 404 after the page loads is a separate failure.
-3. **Check the deployed build and fallback.** Confirm the deployment succeeded, includes `vercel.json`, and uses the intended branch/commit. Check the Vite preset, `npm run build`, and `dist` output. Root Directory is empty for the frontend-only repo, or `frontend` for a repo containing both apps. Verify `index.html` exists in the output and the configuration is inside the selected project root. Redeploy after correcting these settings.
+3. **Check the deployed build and fallback.** Confirm the deployment succeeded, includes `vercel.json` and `.env.vercel`, and uses the intended branch/commit. Check the Vite preset, `npm run build -- --mode vercel`, and `dist` output. Root Directory is empty for the frontend-only repo, or `frontend` for a repo containing both apps. Verify `index.html` exists in the output and the configuration is inside the selected project root. Redeploy after correcting these settings.
 4. **If the document loads, inspect the next failing request.** Missing JavaScript/CSS, a module MIME-type error, or HTML returned for an asset points to asset paths/build output or fallback handling. A Console exception after assets load points to frontend execution. Do not treat every blank screen as the same hosting 404.
 5. **Check API and session failures separately.** Inspect the actual request URL. For Vercel plus a separate backend, REST requests must reach the backend origin configured by build-time `VITE_API_URL`. A same-origin `/api/...` response containing HTML can mean the SPA fallback caught a misdirected API request. Check the backend `/health`, backend logs, and exact `CORS_ORIGIN`. A 401/403 on session restoration needs authentication/authorization investigation; it is different from a missing HTML document.
 6. **Verify the deployed result.** Directly open and reload `/auth/signin`; sign in and reload `/crud`; open a real shared `/q/<shareId>` link in a new tab. A signed-out protected route should reach sign-in, then return to the requested destination. Confirm successful document and asset requests, working API calls, and no hosting 404. Compare the deployment URL with the custom domain if only one still fails.
@@ -61,6 +63,21 @@ Keep the failing URL, timestamp, HTTP status, hosting request ID, and relevant d
 
 ## Browser-only demo
 
-`npm.cmd run dev:demo` is an explicit browser-only preview using sample accounts. It does not use MongoDB or create links that work across devices.
+Demo mode is a practice copy of Quizly. It simulates accounts, quizzes, and results in this browser instead of using the real server. It is useful for trying the interface without setting up a backend. It cannot host/join live rooms or share newly created quizzes with people on other devices. Closing and reopening the same browser can preserve demo data; clearing that site's storage removes it.
+
+The presence of `.env.demo` does **not** turn demo mode on for the whole project. The selected Vite mode decides which settings file is loaded:
+
+- `npm.cmd run dev`: real API through the local Vite proxy; start the backend separately.
+- `npm.cmd run dev:demo`: explicitly loads `.env.demo` and uses simulated browser data.
+- `npm.cmd run build`: normal production build for same-origin backend hosting, unless `VITE_API_URL` is explicitly configured.
+- `npm.cmd run build -- --mode vercel`: real API and live sockets on the public Render backend, using `.env.vercel`. This is Vercel's configured build command.
+
+Vite's `--mode vercel` selects environment settings; it is still an optimized production build. Existing shell/hosting variables override settings files. Restart the dev server or rebuild/redeploy after changing a `VITE_` value; refreshing a previously built page cannot change its mode.
+
+`npm.cmd run preview` serves the last built `dist`; it does not activate demo mode. A Vercel **Preview deployment** is also different from Quizly's demo mode: with these settings it uses the real backend and the same database as production, subject to its frontend origin being allowed by CORS.
+
+The demo displays a **UI preview** banner and offers `maya@example.com` without a password. In the real app, create/sign in to a real account with a password. Demo accounts, quizzes, and results do not transfer to the backend when you change modes. With a real account, save a quiz, choose **Host this quiz live**, then **Create live room**; other signed-in users join with its 8-character code.
+
+To verify a real deployment, check that the preview banner is absent, `/health` on the backend reports a connected database, and browser `/api/...` requests go to the intended backend. When opening a live room, check the `/socket.io` connection as well. Backend health alone does not prove that sign-in, room creation, or a complete game works; test those with an organiser and a separate participant account.
 
 Checks: `npm.cmd test`, `npm.cmd run lint`, `npm.cmd run build`. On restricted Windows environments, build with `npm.cmd run build -- --configLoader native`.

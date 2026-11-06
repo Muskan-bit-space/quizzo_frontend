@@ -16,6 +16,18 @@ npm.cmd run dev
 
 Normal mode sends relative `/api` requests. Vite proxies these to `VITE_BACKEND_URL`, defaulting to `http://127.0.0.1:4444`. Production builds can be served directly by the backend on the same origin. For a separately hosted API, set `VITE_API_URL` at build time and allow the frontend's origin in backend CORS. See [.env.example](../.env.example).
 
+### Real users and live rooms on Vercel
+
+The public frontend is `https://quizzo-frontend.vercel.app`; its backend is `https://quizzo-backend-zvck.onrender.com`. [vercel.json](../vercel.json) uses `npm run build -- --mode vercel` to load [.env.vercel](../.env.vercel), which explicitly sets `VITE_DEMO_MODE=false` and the public `VITE_API_URL`. Both authenticated REST requests and Socket.IO use that backend. The existing SPA rewrite continues to support page reloads and direct links.
+
+Vercel environment variables take precedence over the file. If configured in the dashboard, keep `VITE_DEMO_MODE=false` and the API origin consistent in each intended deployment scope, then redeploy. Backend `CORS_ORIGIN` must include the exact frontend origin without a trailing slash; a different preview/custom domain needs its own allowed origin. Run one backend instance for live scheduling. The regular local `dev` and `build` commands keep their existing local-proxy/same-origin behavior.
+
+Real users register with a password and their quizzes/results live in MongoDB. Save a quiz, open **Host this quiz live**, and create a room; participants sign in and join with the room code. Demo accounts and browser-only quizzes are separate and do not become real accounts or published quizzes when the mode changes.
+
+### What demo mode means
+
+Demo mode is a practice copy that works without the backend. It can show quiz creation, taking a quiz, and sample scores on one browser, but it cannot connect different people's devices or run live multiplayer rooms. Having `.env.demo` in the repository does not activate it automatically: only explicitly selecting the `demo` mode loads that file. Normal mode never silently switches to demo data when a backend request fails.
+
 For the complete local UI preview:
 
 ```powershell
@@ -26,7 +38,7 @@ The demo script uses Vite's `demo` mode and [.env.demo](../.env.demo) to set `VI
 
 Preview data lives in this browser's localStorage. Its links work only within the same browser storage/origin. They cannot carry quizzes to another device. Do not use preview results as real assessment records.
 
-The standard production build does not enable demo mode. Do not deploy a demo-mode build as a real authenticated service.
+The standard production build and the Vercel-specific build use the real API by default; `.env.vercel` explicitly disables demo mode. Shell/hosting overrides can change these settings, so verify the built deployment. A demo page has a **UI preview** banner and password-free sample sign-in. A real page uses password sign-in, actual `/api` requests, and `/socket.io` when a live room is opened. Environment changes need a dev-server restart or a fresh build/deployment. Do not deploy a demo-mode build as a real authenticated service. See the [frontend setup and verification steps](../README.md#browser-only-demo).
 
 ## User journeys
 
